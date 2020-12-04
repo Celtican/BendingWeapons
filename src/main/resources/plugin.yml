@@ -5,3 +5,4 @@ api-version: 1.16
 authors: [ Celtican ]
 description: A Project Korra addon that implements moves which utilize swords, bows, and more
 depend: [ ProjectKorra ]
+softdepend: [ NBTAPI ]

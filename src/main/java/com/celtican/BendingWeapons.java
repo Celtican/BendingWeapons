@@ -9,9 +9,12 @@ public class BendingWeapons extends JavaPlugin {
     public static String AUTHOR = "Celtican";
     public static String VERSION = "0.1";
 
+    public static boolean isNBTEnabled;
+
     @Override public void onEnable() {
-        Bukkit.getServer().getPluginManager().registerEvents(new AbilityListener(), this);
+        getServer().getPluginManager().registerEvents(new AbilityListener(), this);
         CoreAbility.registerPluginAbilities(this, "com.celtican.abilities");
+        isNBTEnabled = getServer().getPluginManager().getPlugin("NBTAPI") != null;
     }
 
     @Override public void onDisable() {
