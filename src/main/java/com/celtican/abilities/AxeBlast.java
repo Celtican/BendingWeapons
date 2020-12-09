@@ -4,26 +4,27 @@ import com.celtican.BendingWeapons;
 import com.celtican.utils.ItemHandler;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.BendingPlayer;
+import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
+import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.TempBlock;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 
 public class AxeBlast extends EarthAbility implements AddonAbility {
 
+    private TempBlock sourceBlock;
     private TempFallingBlock block;
     private boolean isBlasting = false;
 
-    public AxeBlast(Player player) {
-        this(player, null);
-    }
     public AxeBlast(Player player, Block block) {
         super(player);
 
@@ -33,8 +34,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
 
 //        new TempBlock(block, Material.AIR.createBlockData(), 1000);
         this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 1000);
-        new TempBlock(block, Material.AIR.createBlockData(), 5000);
-
+        this.sourceBlock = new TempBlock(block, Material.AIR.createBlockData());
 
         Location loc = player.getLocation();
         World world = player.getWorld();
@@ -42,40 +42,43 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         start();
     }
 
-    public static void create(BendingPlayer player, PlayerInteractEvent event) {
-        if (ItemHandler.getType(player.getPlayer()) != ItemHandler.ItemType.AXE) return;
+    public static void blast(BendingPlayer player) {
+        boolean wasAbilityFound = false;
 
-        switch (event.getAction()) {
-            case RIGHT_CLICK_BLOCK:
-                if (!isEarthbendable(player.getPlayer(), "AxeBlast", event.getClickedBlock())) return;
-                new AxeBlast(player.getPlayer(), event.getClickedBlock());
-                break;
-            case LEFT_CLICK_AIR:
-            case LEFT_CLICK_BLOCK:
-                boolean wasAbilityFound = false;
-
-                for (AxeBlast axeBlast : getAbilities(player.getPlayer(), AxeBlast.class)) {
-                    if (axeBlast.isBlasting) continue;
-                    if (axeBlast.getLocation().distance(player.getPlayer().getEyeLocation()) <= 5 &&
-                            axeBlast.blast(player.getPlayer().getEyeLocation().getDirection())) {
-                        wasAbilityFound = true;
-                    }
-                }
-
-
-                if (wasAbilityFound) {
-                    player.addCooldown("AxeBlast", (long) (1000 / ItemHandler.getAttackSpeed(player.getPlayer())));
-                    Location loc = player.getPlayer().getLocation();
-                    World world = player.getPlayer().getWorld();
-                    world.playSound(loc, Sound.ENTITY_GHAST_SHOOT, 1, 2.0f);
-                    world.playSound(loc, Sound.BLOCK_ANCIENT_DEBRIS_BREAK, 1, 2.0f);
-                }
-                break;
+        for (AxeBlast axeBlast : getAbilities(player.getPlayer(), AxeBlast.class)) {
+            if (axeBlast.isBlasting) continue;
+            if (axeBlast.getLocation().distance(player.getPlayer().getEyeLocation()) <= 5 &&
+                    axeBlast.blast(player.getPlayer().getEyeLocation().getDirection())) {
+                wasAbilityFound = true;
+            }
         }
+
+        if (wasAbilityFound) {
+            player.addCooldown("AxeBlast", (long) (1000 / ItemHandler.getAttackSpeed(player.getPlayer())));
+            Location loc = player.getPlayer().getLocation();
+            World world = player.getPlayer().getWorld();
+            world.playSound(loc, Sound.ENTITY_GHAST_SHOOT, 1, 2.0f);
+            world.playSound(loc, Sound.BLOCK_ANCIENT_DEBRIS_BREAK, 1, 2.0f);
+        }
+    }
+    public static void create(BendingPlayer player, Block block) {
+        if (!isEarthbendable(player.getPlayer(), "AxeBlast", block)) return;
+        new AxeBlast(player.getPlayer(), block);
     }
 
     @Override public void progress() {
-        if (block.fallingBlock.isDead()) remove();
+        if (block.fallingBlock.isDead()) {
+            remove();
+            return;
+        }
+        Entity entity = GeneralMethods.getClosestEntity(getLocation(), 1);
+        if (entity != null) {
+            if (entity.getUniqueId() == player.getUniqueId()) return;
+            GeneralMethods.setVelocity(entity, getLocation().getDirection().multiply(0.3f));
+            if (entity instanceof LivingEntity) {
+                DamageHandler.damageEntity(entity, 3, this);
+            }
+        }
     }
 
     private boolean blast(Vector vector) {
@@ -86,6 +89,11 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         return true;
     }
 
+    @Override public void remove() {
+        super.remove();
+        if (block != null) block.remove();
+        if (sourceBlock != null) sourceBlock.revertBlock();
+    }
     @Override public boolean isSneakAbility() {
         return false;
     }
@@ -108,7 +116,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         return BendingWeapons.VERSION;
     }
     @Override public String getDescription() {
-        return "[WIP] Right click with axe to raise earth, left click raised earth to blast. Damage scales with axe.";
+        return "[WIP] Right click or sneak with axe to raise earth, left click raised earth to blast. Damage scales with axe.";
     }
     @Override public void load() {
 
