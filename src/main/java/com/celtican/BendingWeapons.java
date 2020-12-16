@@ -1,5 +1,6 @@
 package com.celtican;
 
+import com.celtican.stamina.StaminaEntity;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.ability.CoreAbility;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +24,7 @@ public class BendingWeapons extends JavaPlugin implements Runnable {
 
     @Override public void run() {
         TempFallingBlock.run();
+        StaminaEntity.run();
     }
 
 }

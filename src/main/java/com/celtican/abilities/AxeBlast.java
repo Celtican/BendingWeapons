@@ -1,6 +1,7 @@
 package com.celtican.abilities;
 
 import com.celtican.BendingWeapons;
+import com.celtican.stamina.StaminaEntity;
 import com.celtican.utils.ItemHandler;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.BendingPlayer;
@@ -22,6 +23,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
 
     private TempBlock sourceBlock;
     private TempFallingBlock block;
+    private StaminaEntity e;
     private boolean isBlasting = false;
 
     public AxeBlast(Player player, Block block) {
@@ -34,6 +36,9 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
 //        new TempBlock(block, Material.AIR.createBlockData(), 1000);
         this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 1000);
         this.sourceBlock = new TempBlock(block, Material.AIR.createBlockData());
+
+        e = StaminaEntity.getStaminaEntity(player);
+        e.affect();
 
         Location loc = player.getLocation();
         World world = player.getWorld();
@@ -82,9 +87,11 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
 
     private boolean blast(Vector vector) {
         if (isBlasting) return false;
+        if (!e.has(1)) return false;
         isBlasting = true;
         block.fallingBlock.setVelocity(vector.normalize().multiply(2));
         block.delay = 2000;
+        e.affect(1);
         return true;
     }
 
