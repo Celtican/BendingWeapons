@@ -15,7 +15,6 @@ import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -71,13 +70,13 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
             remove();
             return;
         }
-        Entity entity = GeneralMethods.getClosestEntity(getLocation(), 1);
+        if (!isBlasting) return;
+        Entity entity = GeneralMethods.getClosestLivingEntity(getLocation(), 1);
         if (entity != null) {
             if (entity.getUniqueId() == player.getUniqueId()) return;
-            GeneralMethods.setVelocity(entity, getLocation().getDirection().multiply(0.3f));
-            if (entity instanceof LivingEntity) {
-                DamageHandler.damageEntity(entity, 3, this);
-            }
+            GeneralMethods.setVelocity(entity, block.fallingBlock.getVelocity().multiply(0.3f));
+            DamageHandler.damageEntity(entity, ItemHandler.getDamage(player)/2, this);
+            block.remove();
         }
     }
 
