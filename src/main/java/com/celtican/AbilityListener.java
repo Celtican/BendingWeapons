@@ -21,10 +21,6 @@ public class AbilityListener implements Listener {
 
         if (bPlayer == null) return;
 
-        player.sendMessage("event triggered");
-        player.sendMessage("type: " + event.getAction().toString());
-        player.sendMessage("material: " + event.getMaterial().toString());
-
         switch (bPlayer.getBoundAbilityName()) {
             case "AxeBlast":
                 if (ItemHandler.getType(event.getMaterial()) != ItemHandler.ItemType.AXE) return;

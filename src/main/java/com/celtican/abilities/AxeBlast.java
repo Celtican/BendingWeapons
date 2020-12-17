@@ -95,7 +95,6 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
     }
 
     @Override public void remove() {
-        player.sendMessage("§4removed");
         super.remove();
         if (block != null) block.remove();
         if (sourceBlock != null) sourceBlock.revertBlock();
