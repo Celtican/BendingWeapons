@@ -12,7 +12,10 @@ public class BendingWeapons extends JavaPlugin implements Runnable {
 
     public static boolean useAttributes = true;
 
+    public static BendingWeapons main;
+
     @Override public void onEnable() {
+        main = this;
         getServer().getPluginManager().registerEvents(new AbilityListener(), this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0, 1);
         CoreAbility.registerPluginAbilities(this, "com.celtican.abilities");

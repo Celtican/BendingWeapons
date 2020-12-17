@@ -1,14 +1,15 @@
 package com.celtican.utils;
 
 import com.celtican.BendingWeapons;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 
 public class ItemHandler {
 
-    private static ItemType getType(ItemStack item) {
-        switch (item.getType()) {
+    public static ItemType getType(Material material) {
+        switch (material) {
             case WOODEN_SWORD:
             case STONE_SWORD:
             case IRON_SWORD:
@@ -108,12 +109,14 @@ public class ItemHandler {
         }
     }
 
-    public static ItemType getType(Player player) {
-        return getType(player.getInventory().getItemInMainHand());
+    public static ItemType getType(ItemStack item) {
+        return getType(item.getType());
     }
 
     public static float getDamage(Player player) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+        return getDamage(player, player.getInventory().getItemInMainHand());
+    }
+    public static float getDamage(Player player, ItemStack item) {
         float damage = getBaseDamage(item);
 
         if (BendingWeapons.useAttributes) {
@@ -127,7 +130,9 @@ public class ItemHandler {
     }
 
     public static float getAttackSpeed(Player player) {
-        ItemStack item = player.getInventory().getItemInMainHand();
+        return getAttackSpeed(player, player.getInventory().getItemInMainHand());
+    }
+    public static float getAttackSpeed(Player player, ItemStack item) {
         float speed = getBaseSpeed(item);
 
         if (BendingWeapons.useAttributes) {

@@ -10,10 +10,7 @@ import com.projectkorra.projectkorra.ability.AddonAbility;
 import com.projectkorra.projectkorra.ability.EarthAbility;
 import com.projectkorra.projectkorra.util.DamageHandler;
 import com.projectkorra.projectkorra.util.TempBlock;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -33,10 +30,11 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
 
         if (!block.getWorld().getBlockAt(block.getLocation().add(0, 1, 0)).isEmpty()) return;
 
-//        new TempBlock(block, Material.AIR.createBlockData(), 1000);
-        this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 1000);
-        this.sourceBlock = new TempBlock(block, Material.AIR.createBlockData());
-
+        Runnable r = () -> {
+            AxeBlast.this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 1000);
+            AxeBlast.this.sourceBlock = new TempBlock(block, Material.AIR.createBlockData());
+        };
+        Bukkit.getScheduler().scheduleSyncDelayedTask(BendingWeapons.main, r);
         e = StaminaEntity.getStaminaEntity(player);
         e.affect();
 
@@ -71,6 +69,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
     }
 
     @Override public void progress() {
+        if (block == null) return; // waiting 1 tick to initialize
         if (block.fallingBlock.isDead()) {
             remove();
             return;
@@ -96,6 +95,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
     }
 
     @Override public void remove() {
+        player.sendMessage("§4removed");
         super.remove();
         if (block != null) block.remove();
         if (sourceBlock != null) sourceBlock.revertBlock();

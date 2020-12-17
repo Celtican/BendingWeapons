@@ -15,15 +15,19 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class AbilityListener implements Listener {
 
-    @EventHandler public void onPlayerLeftClick(PlayerInteractEvent event) {
+    @EventHandler public void onPlayerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
         if (bPlayer == null) return;
 
+        player.sendMessage("event triggered");
+        player.sendMessage("type: " + event.getAction().toString());
+        player.sendMessage("material: " + event.getMaterial().toString());
+
         switch (bPlayer.getBoundAbilityName()) {
             case "AxeBlast":
-                if (ItemHandler.getType(player) != ItemHandler.ItemType.AXE) return;
+                if (ItemHandler.getType(event.getMaterial()) != ItemHandler.ItemType.AXE) return;
                 switch (event.getAction()) {
                     case RIGHT_CLICK_BLOCK:
                         AxeBlast.create(bPlayer, event.getClickedBlock());
@@ -47,7 +51,7 @@ public class AbilityListener implements Listener {
 
         switch (bPlayer.getBoundAbilityName()) {
             case "AxeBlast":
-                if (ItemHandler.getType(player) != ItemHandler.ItemType.AXE) return;
+                if (ItemHandler.getType(player.getInventory().getItemInMainHand()) != ItemHandler.ItemType.AXE) return;
                 AxeBlast.create(bPlayer, player.getTargetBlock(5));
                 break;
         }
