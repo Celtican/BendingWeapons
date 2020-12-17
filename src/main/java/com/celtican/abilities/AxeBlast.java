@@ -88,7 +88,11 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         if (isBlasting) return false;
         if (!e.has(1)) return false;
         isBlasting = true;
-        block.fallingBlock.setVelocity(vector.normalize().multiply(2));
+        Vector v = new Vector();
+        v.setX((BendingWeapons.random.nextFloat()-0.5f)*0.1f);
+        v.setY((BendingWeapons.random.nextFloat()-0.5f)*0.1f);
+        v.setZ((BendingWeapons.random.nextFloat()-0.5f)*0.1f);
+        block.fallingBlock.setVelocity(vector.normalize().multiply(2).add(v));
         block.delay = 2000;
         e.affect(1);
         return true;
