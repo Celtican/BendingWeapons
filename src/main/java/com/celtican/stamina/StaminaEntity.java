@@ -3,6 +3,8 @@ package com.celtican.stamina;
 import com.projectkorra.projectkorra.BendingPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.Hashtable;
 import java.util.UUID;
@@ -59,15 +61,15 @@ public class StaminaEntity {
 
         int curTick = Bukkit.getCurrentTick();
 
-        if (stamina == maxStamina) {
+        if (getStamina() == getMaxStamina()) {
             if (lastUpdated + TICKS_TO_DESTROY <= curTick) entities.remove(uuid);
             return;
         }
 
-        if (lastUpdated + regenDelay >= curTick) return;
-        stamina += regenRate;
-        if (stamina >= maxStamina) {
-            stamina = maxStamina;
+        if (lastUpdated + getRegenDelay() >= curTick) return;
+        stamina += getRegenRate();
+        if (getStamina() >= getMaxStamina()) {
+            stamina = getMaxStamina();
             affect();
         }
     }
@@ -78,8 +80,8 @@ public class StaminaEntity {
     public void affect(float damage) {
         affect();
         stamina -= damage;
-        if (stamina < 0) stamina = 0;
-        else if (stamina > maxStamina) stamina = maxStamina;
+        if (getStamina() < 0) stamina = 0;
+        else if (getStamina() > getMaxStamina()) stamina = getMaxStamina();
     }
 
     public float getStamina() {
@@ -89,9 +91,24 @@ public class StaminaEntity {
         return maxStamina;
     }
     public float getRegenRate() {
+        float regenRate = this.regenRate;
+
+        PotionEffect potion = entity.getPotionEffect(PotionEffectType.SPEED);
+        if (potion != null) regenRate *= 1.2f * (potion.getAmplifier() + 1);
+        potion = entity.getPotionEffect(PotionEffectType.SLOW);
+        if (potion != null) regenRate *= Math.pow(0.75f, potion.getAmplifier()+1);
+
         return regenRate;
     }
     public float getRegenDelay() {
+        float regenDelay = this.regenDelay;
+
+        PotionEffect potion = entity.getPotionEffect(PotionEffectType.SPEED);
+//        if (potion != null) regenDelay *= 0.75f * (potion.getAmplifier() + 1);
+        if (potion != null) regenDelay *= Math.pow(0.75f, potion.getAmplifier()+1);
+        potion = entity.getPotionEffect(PotionEffectType.SLOW);
+        if (potion != null) regenDelay *= 1.2f * potion.getAmplifier()+1;
+
         return regenDelay;
     }
     public float getStaminaPercent() {
