@@ -104,7 +104,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         if (sourceBlock != null) sourceBlock.revertBlock();
     }
     @Override public boolean isSneakAbility() {
-        return false;
+        return true;
     }
     @Override public boolean isHarmlessAbility() {
         return false;
