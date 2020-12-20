@@ -125,7 +125,10 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         return BendingWeapons.VERSION;
     }
     @Override public String getDescription() {
-        return "[WIP] Right click or sneak with axe to raise earth, left click raised earth to blast. Damage scales with axe.";
+        return "§2§nAxe-Based Move\n" +
+               "§a§oOutdated. Will be replaced soon.\n" +
+               "§2Right-Click/Shift:§a Raise target earth block.\n" +
+               "§2Left-Click:§a Launch raised earth blocks.";
     }
     @Override public void load() {
 
