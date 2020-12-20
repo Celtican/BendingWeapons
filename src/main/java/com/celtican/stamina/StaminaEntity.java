@@ -2,6 +2,8 @@ package com.celtican.stamina;
 
 import com.projectkorra.projectkorra.BendingPlayer;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -44,6 +46,8 @@ public class StaminaEntity {
     public final UUID uuid;
     public final LivingEntity entity;
 
+    protected float armor;
+
     protected float maxStamina = 3;
     protected float stamina = maxStamina;
     protected float regenRate = maxStamina/60; // three seconds to fill
@@ -53,6 +57,7 @@ public class StaminaEntity {
     protected StaminaEntity(UUID uuid) {
         this.uuid = uuid;
         entity = (LivingEntity) Bukkit.getEntity(uuid);
+        calcArmor();
 
         entities.put(uuid, this);
     }
@@ -60,6 +65,8 @@ public class StaminaEntity {
     protected void localRun() {
 
         int curTick = Bukkit.getCurrentTick();
+
+        if (curTick % 20 == 0) calcArmor(); // every second, recalculate armor value
 
         if (getStamina() == getMaxStamina()) {
             if (lastUpdated + TICKS_TO_DESTROY <= curTick) entities.remove(uuid);
@@ -108,6 +115,7 @@ public class StaminaEntity {
         if (potion != null) regenDelay *= Math.pow(0.75f, potion.getAmplifier()+1);
         potion = entity.getPotionEffect(PotionEffectType.SLOW);
         if (potion != null) regenDelay *= 1.2f * potion.getAmplifier()+1;
+        regenDelay *= armor/20f + 1;
 
         return regenDelay;
     }
@@ -116,6 +124,14 @@ public class StaminaEntity {
     }
     public boolean has(float stamina) {
         return getStamina() >= stamina;
+    }
+    public float calcArmor() {
+        AttributeInstance a = entity.getAttribute(Attribute.GENERIC_ARMOR);
+        if (a != null) armor = (float)a.getValue();
+        return armor;
+    }
+    public float getArmor() {
+        return armor;
     }
 
     public boolean isPlayer() {
