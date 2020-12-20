@@ -31,7 +31,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         if (!block.getWorld().getBlockAt(block.getLocation().add(0, 1, 0)).isEmpty()) return;
 
         Runnable r = () -> {
-            AxeBlast.this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 1000);
+            AxeBlast.this.block = new TempFallingBlock(block.getLocation().toCenterLocation(), new Vector(0, 0.4, 0), block.getBlockData(), 900);
             AxeBlast.this.sourceBlock = new TempBlock(block, Material.AIR.createBlockData());
         };
         Bukkit.getScheduler().scheduleSyncDelayedTask(BendingWeapons.main, r);
