@@ -8,6 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class StaminaEntity {
 
     private static final int TICKS_TO_DESTROY = 100; // 5 seconds after filling up, StaminaEntity will remove itself to free up space. Note that it
 
+    private static final ArrayList<StaminaEntity> queueForRemoval = new ArrayList<>(4);
     private static final Hashtable<UUID, StaminaEntity> entities = new Hashtable<>();
     // I think Hashtable is better at multi-threading than HashMap. Otherwise they are effectively the same
 
@@ -37,6 +39,8 @@ public class StaminaEntity {
 
     public static void run() {
         for (StaminaEntity entity : entities.values()) entity.localRun();
+        for (StaminaEntity entity : queueForRemoval) entities.remove(entity.uuid);
+        queueForRemoval.clear();
     }
 
     ////////////////////
@@ -69,7 +73,7 @@ public class StaminaEntity {
         if (curTick % 20 == 0) calcArmor(); // every second, recalculate armor value
 
         if (getStamina() == getMaxStamina()) {
-            if (lastUpdated + TICKS_TO_DESTROY <= curTick) entities.remove(uuid);
+            if (lastUpdated + TICKS_TO_DESTROY <= curTick) remove();
             return;
         }
 
@@ -89,6 +93,9 @@ public class StaminaEntity {
         stamina -= damage;
         if (getStamina() < 0) stamina = 0;
         else if (getStamina() > getMaxStamina()) stamina = getMaxStamina();
+    }
+    public void remove() {
+        queueForRemoval.add(this);
     }
 
     public float getStamina() {
@@ -119,21 +126,22 @@ public class StaminaEntity {
 
         return regenDelay;
     }
+    public float getArmor() {
+        return armor;
+    }
     public float getStaminaPercent() {
         return getStamina()/getMaxStamina();
     }
-    public boolean has(float stamina) {
-        return getStamina() >= stamina;
-    }
+
     public float calcArmor() {
         AttributeInstance a = entity.getAttribute(Attribute.GENERIC_ARMOR);
         if (a != null) armor = (float)a.getValue();
         return armor;
     }
-    public float getArmor() {
-        return armor;
-    }
 
+    public boolean has(float stamina) {
+        return getStamina() >= stamina;
+    }
     public boolean isPlayer() {
         return false;
     }
