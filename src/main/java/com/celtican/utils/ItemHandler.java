@@ -141,6 +141,12 @@ public class ItemHandler {
 
         return speed;
     }
+    public static int getAttackSpeedInTicks(Player player, ItemStack item) {
+        return Math.round(20 / getAttackSpeed(player.getPlayer(), item));
+    }
+    public static int getAttackSpeedInverseInTicks(Player player, ItemStack item) {
+        return Math.round(getAttackSpeed(player, item) * 20);
+    }
 
     public enum ItemType {
         SWORD, AXE, BOW, TOOL, NONE, OTHER
