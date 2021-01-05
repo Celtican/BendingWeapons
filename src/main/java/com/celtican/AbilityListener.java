@@ -1,6 +1,7 @@
 package com.celtican;
 
 import com.celtican.abilities.AxeBlast;
+import com.celtican.abilities.PhaseStrike;
 import com.celtican.utils.ItemHandler;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.BendingPlayer;
@@ -15,7 +16,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 
 public class AbilityListener implements Listener {
 
-    @EventHandler public void onPlayerRightClick(PlayerInteractEvent event) {
+    @EventHandler public void onPlayerSwing(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
@@ -31,6 +32,18 @@ public class AbilityListener implements Listener {
                     case LEFT_CLICK_AIR:
                     case LEFT_CLICK_BLOCK:
                         AxeBlast.blast(bPlayer);
+                        break;
+                }
+                break;
+            case "PhaseStrike":
+                switch (event.getAction()) {
+                    case RIGHT_CLICK_BLOCK:
+                    case RIGHT_CLICK_AIR:
+                        PhaseStrike.phase(bPlayer);
+                        break;
+                    case LEFT_CLICK_AIR:
+                    case LEFT_CLICK_BLOCK:
+                        PhaseStrike.strike(bPlayer);
                         break;
                 }
                 break;
@@ -50,6 +63,7 @@ public class AbilityListener implements Listener {
                 if (ItemHandler.getType(player.getInventory().getItemInMainHand()) != ItemHandler.ItemType.AXE) return;
                 AxeBlast.create(bPlayer, player.getTargetBlock(5));
                 break;
+            case "PhaseStrike": PhaseStrike.create(bPlayer); break;
         }
     }
 
