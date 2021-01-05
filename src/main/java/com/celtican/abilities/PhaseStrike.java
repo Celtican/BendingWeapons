@@ -275,10 +275,10 @@ public class PhaseStrike extends WaterAbility implements AddonAbility {
             if (++d == duration) {
                 controllable = false;
                 tempBlock.revertBlock();
-                bPlayer.addCooldown(PhaseStrike.this, (long) (1000 / ItemHandler.getAttackSpeed(player.getPlayer())));
                 if (!takenStamina) {
                     staminaEntity.affect(1);
                     takenStamina = true;
+                    bPlayer.addCooldown(PhaseStrike.this, (long) (1000 / ItemHandler.getAttackSpeed(player.getPlayer())));
                 }
             } else if (d > duration) {
                 if (items.isEmpty()) PhaseStrike.this.remove();
@@ -304,7 +304,11 @@ public class PhaseStrike extends WaterAbility implements AddonAbility {
         @Override public void remove() {
             for (ItemTime item : items) item.item.remove();
             items.clear(); // just to be safe, I don't want mem leaks
-            if (!takenStamina) staminaEntity.affect(1);
+            if (!takenStamina) {
+                staminaEntity.affect(1);
+                takenStamina = true;
+                bPlayer.addCooldown(PhaseStrike.this, (long) (1000 / ItemHandler.getAttackSpeed(player.getPlayer())));
+            }
         }
 
         private class ItemTime {
