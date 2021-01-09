@@ -1,5 +1,6 @@
 package com.celtican;
 
+import com.celtican.abilities.CinderSlash;
 import com.celtican.stamina.StaminaEntity;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.ability.CoreAbility;
@@ -32,6 +33,7 @@ public class BendingWeapons extends JavaPlugin implements Runnable {
     @Override public void run() {
         TempFallingBlock.run();
         StaminaEntity.run();
+        CinderSlash.staticProgress();
     }
 
 }

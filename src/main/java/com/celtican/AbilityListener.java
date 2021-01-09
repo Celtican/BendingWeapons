@@ -1,10 +1,12 @@
 package com.celtican;
 
 import com.celtican.abilities.AxeBlast;
+import com.celtican.abilities.CinderSlash;
 import com.celtican.abilities.PhaseStrike;
 import com.celtican.utils.ItemHandler;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.BendingPlayer;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
@@ -17,6 +19,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent;
 public class AbilityListener implements Listener {
 
     @EventHandler public void onPlayerSwing(PlayerInteractEvent event) {
+        if (event.getMaterial() == Material.AIR) return; // some events trigger twice, once for the item in hand, and once for the hand. This filters the doubles out, we don't need events if they aren't holding anything anyways
         Player player = event.getPlayer();
         BendingPlayer bPlayer = BendingPlayer.getBendingPlayer(player);
 
@@ -47,6 +50,15 @@ public class AbilityListener implements Listener {
                         break;
                 }
                 break;
+            case "CinderSlash":
+                switch (event.getAction()) {
+                    case RIGHT_CLICK_BLOCK:
+                    case RIGHT_CLICK_AIR:
+                        CinderSlash.rightClick(bPlayer);
+                    case LEFT_CLICK_AIR:
+                    case LEFT_CLICK_BLOCK:
+                        CinderSlash.leftClick(bPlayer);
+                }
         }
     }
 
