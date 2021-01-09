@@ -20,12 +20,12 @@ import java.util.List;
 
 public class CinderSlash extends FireAbility implements AddonAbility {
 
-    private static float DURATION = 5;
-    private static float SPEED = 0.5f; // duration x speed = radius in blocks of move
-    private static float RANGE = 3.5f;
-    private static float RADIUS = 1.5f;
-    private static float EXPLODE_RADIUS = 1.5f;
-    private static float EXPLODE_VELOCITY = 1;
+    private final static float DURATION = 5;
+    private final static float SPEED = 0.5f; // duration x speed = radius in blocks of move
+    private final static float RANGE = 3.5f;
+    private final static float RADIUS = 1.5f;
+    private final static float EXPLODE_RADIUS = 1.5f;
+    private final static float EXPLODE_VELOCITY = 1;
 
     private final ParticleBuilder pb;
     private final Location loc;
@@ -44,7 +44,7 @@ public class CinderSlash extends FireAbility implements AddonAbility {
         StaminaEntity.getStaminaEntity(player).affect(1);
         bPlayer.addCooldown(this, ItemHandler.getAttackSpeedInTicks(player, player.getInventory().getItemInMainHand())*50L);
 
-        List<Entity> entities = GeneralMethods.getEntitiesAroundPoint(loc, EXPLODE_RADIUS);
+        List<Entity> entities = GeneralMethods.getEntitiesAroundPoint(loc, RADIUS);
         for (Entity entity : entities) {
             if (entity == player.getPlayer()) continue;
             if (entity instanceof LivingEntity && !entity.isDead()) {
@@ -121,7 +121,7 @@ public class CinderSlash extends FireAbility implements AddonAbility {
     }
 
     @Override public boolean isSneakAbility() {
-        return false;
+        return true;
     }
     @Override public boolean isHarmlessAbility() {
         return false;
@@ -130,7 +130,7 @@ public class CinderSlash extends FireAbility implements AddonAbility {
         return 0;
     }
     @Override public Location getLocation() {
-        return null;
+        return loc;
     }
 
     @Override public void load() {
@@ -146,12 +146,17 @@ public class CinderSlash extends FireAbility implements AddonAbility {
     @Override public String getVersion() {
         return BendingWeapons.version;
     }
+    @Override public String getDescription() {
+        return "§4§nSword-Based Move.\n" +
+               "§4Shift-Left-Click:§c Scatter cinders in front of you and set creatures alight for a short time.\n" +
+               "§4Shift-Right-Click:§c Launch yourself back and set creatures in front of you alight for a moderate time.\n" +
+               "§cDuration of fire stacks.";
+    }
 
-    private static ArrayList<BendingPlayer> explodingPlayers = new ArrayList<>();
-
+    private static final ArrayList<BendingPlayer> explodingPlayers = new ArrayList<>();
     public static void staticProgress() {
         for (int i = 0; i < explodingPlayers.size(); i++)
-            if (!explodingPlayers.get(i).getPlayer().isOnline() || explodingPlayers.get(i).getPlayer().isOnGround())
+            if (!explodingPlayers.get(i).getPlayer().isOnline() || explodingPlayers.get(i).getPlayer().isOnGround()) // .isOnGround is the easiest solution, I may improve on this later
                 explodingPlayers.remove(i--).removeCooldown("CinderSlash");
     }
 }
