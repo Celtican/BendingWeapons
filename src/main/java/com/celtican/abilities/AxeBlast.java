@@ -122,7 +122,7 @@ public class AxeBlast extends EarthAbility implements AddonAbility {
         return BendingWeapons.AUTHOR;
     }
     @Override public String getVersion() {
-        return BendingWeapons.VERSION;
+        return BendingWeapons.version;
     }
     @Override public String getDescription() {
         return "§2§nAxe-Based Move\n" +

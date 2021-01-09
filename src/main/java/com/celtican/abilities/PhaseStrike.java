@@ -162,7 +162,7 @@ public class PhaseStrike extends WaterAbility implements AddonAbility {
         return BendingWeapons.AUTHOR;
     }
     @Override public String getVersion() {
-        return BendingWeapons.VERSION;
+        return BendingWeapons.version;
     }
     @Override public String getDescription() {
         return "§3§nSword-Based Move.\n" +

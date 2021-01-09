@@ -11,14 +11,15 @@ import java.util.Random;
 public class BendingWeapons extends JavaPlugin implements Runnable {
 
     public static String AUTHOR = "Celtican";
-    public static String VERSION = "0.1";
 
     public static boolean useAttributes = true;
 
+    public static String version;
     public static BendingWeapons main;
     public static Random random;
 
     @Override public void onEnable() {
+        version = this.getDescription().getVersion();
         main = this;
         random = new Random();
         getServer().getPluginManager().registerEvents(new AbilityListener(), this);

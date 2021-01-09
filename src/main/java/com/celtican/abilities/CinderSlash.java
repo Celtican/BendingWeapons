@@ -144,7 +144,7 @@ public class CinderSlash extends FireAbility implements AddonAbility {
         return BendingWeapons.AUTHOR;
     }
     @Override public String getVersion() {
-        return BendingWeapons.VERSION;
+        return BendingWeapons.version;
     }
 
     private static ArrayList<BendingPlayer> explodingPlayers = new ArrayList<>();
