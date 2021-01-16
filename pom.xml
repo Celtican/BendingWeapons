@@ -58,6 +58,10 @@
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>lumine-repo</id>
+            <url>http://mvn.lumine.io/repository/maven-snapshots/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -73,6 +77,13 @@
             <version>1.8.9</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/libraries/ProjectKorra-1.9.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>io.lumine.xikage</groupId>
+            <artifactId>MythicMobs</artifactId>
+            <version>4.11.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libraries/MythicMobs-4.11.0-BETA.jar</systemPath>
         </dependency>
     </dependencies>
 </project>

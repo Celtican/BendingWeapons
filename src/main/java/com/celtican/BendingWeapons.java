@@ -1,6 +1,7 @@
 package com.celtican;
 
 import com.celtican.abilities.CinderSlash;
+import com.celtican.mythicmobs.MythicMobsHandler;
 import com.celtican.stamina.StaminaEntity;
 import com.celtican.utils.TempFallingBlock;
 import com.projectkorra.projectkorra.ability.CoreAbility;
@@ -13,6 +14,7 @@ public class BendingWeapons extends JavaPlugin implements Runnable {
     public static String AUTHOR = "Celtican";
 
     public static boolean useAttributes = true;
+    public static boolean mythicMobsLoaded = false;
 
     public static String version;
     public static BendingWeapons main;
@@ -25,6 +27,8 @@ public class BendingWeapons extends JavaPlugin implements Runnable {
         getServer().getPluginManager().registerEvents(new AbilityListener(), this);
         getServer().getScheduler().scheduleSyncRepeatingTask(this, this, 0, 1);
         CoreAbility.registerPluginAbilities(this, "com.celtican.abilities");
+        mythicMobsLoaded = getServer().getPluginManager().isPluginEnabled("MythicMobs");
+        if (mythicMobsLoaded) getServer().getPluginManager().registerEvents(new MythicMobsHandler(), this);
     }
 
     @Override public void onDisable() {
