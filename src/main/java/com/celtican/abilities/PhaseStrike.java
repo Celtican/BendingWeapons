@@ -82,7 +82,8 @@ public class PhaseStrike extends WaterAbility implements AddonAbility {
     }
     public static void create(BendingPlayer player) {
         if (ItemHandler.getType(player.getPlayer().getInventory().getItemInMainHand()) != ItemHandler.ItemType.SWORD) return; // requires sword in hand
-        if (!StaminaEntity.getStaminaEntity(player).has(1)) return;
+        StaminaEntity se = StaminaEntity.getStaminaEntity(player, false);
+        if (se != null && !se.has(1)) return;
         Block block = General.getWaterSource(player); // fetch source block in 5 blocks
         boolean fromBottle = false;
         if (block == null) {

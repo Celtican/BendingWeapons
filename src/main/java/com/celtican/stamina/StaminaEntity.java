@@ -25,15 +25,21 @@ public class StaminaEntity {
     // I think Hashtable is better at multi-threading than HashMap. Otherwise they are effectively the same
 
     public static StaminaEntity getStaminaEntity(BendingPlayer bPlayer) {
-        return getStaminaEntity(bPlayer.getUUID());
+        return getStaminaEntity(bPlayer.getUUID(), true);
+    }
+    public static StaminaEntity getStaminaEntity(BendingPlayer bPlayer, boolean create) {
+        return getStaminaEntity(bPlayer.getUUID(), create);
     }
     public static StaminaEntity getStaminaEntity(LivingEntity entity) {
-        return getStaminaEntity(entity.getUniqueId());
+        return getStaminaEntity(entity.getUniqueId(), true);
     } // only living things can have stamina
-    private static StaminaEntity getStaminaEntity(UUID uuid) {
+    public static StaminaEntity getStaminaEntity(LivingEntity entity, boolean create) {
+        return getStaminaEntity(entity.getUniqueId(), create);
+    }
+    private static StaminaEntity getStaminaEntity(UUID uuid, boolean create) {
         // if there's already a StaminaEntity for that uuid, return it, otherwise make one
         StaminaEntity e = entities.get(uuid);
-        if (e != null) return e;
+        if (!create || e != null) return e;
         return Bukkit.getPlayer(uuid) != null ? new StaminaPlayer(uuid) : new StaminaEntity(uuid);
     } // private so outside class can't add nonliving things
 
